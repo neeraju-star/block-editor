@@ -1,5 +1,4 @@
 import type { ComponentConfig } from "@puckeditor/core";
-import type { ReactNode } from "react";
 
 export type SectionProps = {
   backgroundColor: string;
@@ -8,7 +7,6 @@ export type SectionProps = {
   paddingLeft: string;
   paddingRight: string;
   maxWidth: string;
-  children: ReactNode;
 };
 
 export const SectionBlock: ComponentConfig<SectionProps> = {
