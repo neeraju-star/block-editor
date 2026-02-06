@@ -5,6 +5,7 @@ import { editorConfig } from "./config/editorConfig";
 import { TemplateSelector } from "./components/TemplateSelector";
 import { DraftsManager } from "./components/DraftsManager";
 import { ExportModal } from "./components/ExportModal";
+import { ImportModal } from "./components/ImportModal";
 import {
   createDraft,
   updateDraft,
@@ -22,6 +23,7 @@ function App() {
   const [editorData, setEditorData] = useState<Data | null>(null);
   const [currentDraft, setCurrentDraft] = useState<Draft | null>(null);
   const [showExport, setShowExport] = useState(false);
+  const [showImport, setShowImport] = useState(false);
   const [exportHtml, setExportHtml] = useState("");
   const [lastSaved, setLastSaved] = useState<string | null>(null);
   const previewRef = useRef<HTMLDivElement>(null);
@@ -70,6 +72,23 @@ function App() {
     setLastSaved(draft.updatedAt);
     setView("editor");
   }, []);
+
+  // Import a file — creates a new draft from imported data
+  const handleImport = useCallback(
+    (data: Data, name: string) => {
+      const draft = createDraft(name, "email" as DraftType, data);
+      setCurrentDraft(draft);
+      setEditorData(data);
+      setLastSaved(draft.updatedAt);
+      setShowImport(false);
+      setView("editor");
+    },
+    []
+  );
+
+  // Open/close import modal
+  const handleOpenImport = useCallback(() => setShowImport(true), []);
+  const handleCloseImport = useCallback(() => setShowImport(false), []);
 
   // Save draft manually
   const handleSaveDraft = useCallback(() => {
@@ -180,20 +199,32 @@ function App() {
   // Template Selector
   if (view === "selector") {
     return (
-      <TemplateSelector
-        onSelect={handleTemplateSelect}
-        onOpenDrafts={handleGoToDrafts}
-      />
+      <>
+        <TemplateSelector
+          onSelect={handleTemplateSelect}
+          onOpenDrafts={handleGoToDrafts}
+          onImport={handleOpenImport}
+        />
+        {showImport && (
+          <ImportModal onImport={handleImport} onClose={handleCloseImport} />
+        )}
+      </>
     );
   }
 
   // Drafts Manager
   if (view === "drafts") {
     return (
-      <DraftsManager
-        onResume={handleResumeDraft}
-        onBack={() => setView("selector")}
-      />
+      <>
+        <DraftsManager
+          onResume={handleResumeDraft}
+          onBack={() => setView("selector")}
+          onImport={handleOpenImport}
+        />
+        {showImport && (
+          <ImportModal onImport={handleImport} onClose={handleCloseImport} />
+        )}
+      </>
     );
   }
 

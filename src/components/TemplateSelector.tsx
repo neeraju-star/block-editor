@@ -12,6 +12,7 @@ import type { DraftType } from "../lib/drafts";
 type TemplateSelectorProps = {
   onSelect: (data: Data, name: string, type: DraftType) => void;
   onOpenDrafts: () => void;
+  onImport?: () => void;
 };
 
 type Tab = "email" | "webpage";
@@ -19,6 +20,7 @@ type Tab = "email" | "webpage";
 export function TemplateSelector({
   onSelect,
   onOpenDrafts,
+  onImport,
 }: TemplateSelectorProps) {
   const [activeTab, setActiveTab] = useState<Tab>("email");
   const draftCount = getDraftCount();
@@ -78,53 +80,95 @@ export function TemplateSelector({
         Choose a template to get started
       </p>
 
-      {/* My Drafts Button */}
-      {draftCount > 0 && (
-        <button
-          onClick={onOpenDrafts}
-          style={{
-            padding: "12px 32px",
-            backgroundColor: "rgba(255,255,255,0.08)",
-            color: "#ffffff",
-            border: "1px solid rgba(255,255,255,0.15)",
-            borderRadius: "10px",
-            cursor: "pointer",
-            fontSize: "15px",
-            fontWeight: 600,
-            marginBottom: "32px",
-            transition: "all 0.2s",
-            display: "flex",
-            alignItems: "center",
-            gap: "10px",
-          }}
-          onMouseEnter={(e) => {
-            (e.currentTarget as HTMLButtonElement).style.backgroundColor =
-              "rgba(255,255,255,0.15)";
-            (e.currentTarget as HTMLButtonElement).style.borderColor =
-              "rgba(255,255,255,0.3)";
-          }}
-          onMouseLeave={(e) => {
-            (e.currentTarget as HTMLButtonElement).style.backgroundColor =
-              "rgba(255,255,255,0.08)";
-            (e.currentTarget as HTMLButtonElement).style.borderColor =
-              "rgba(255,255,255,0.15)";
-          }}
-        >
-          My Drafts
-          <span
+      {/* Action Buttons */}
+      <div
+        style={{
+          display: "flex",
+          gap: "12px",
+          marginBottom: "32px",
+          flexWrap: "wrap",
+          justifyContent: "center",
+        }}
+      >
+        {draftCount > 0 && (
+          <button
+            onClick={onOpenDrafts}
             style={{
-              backgroundColor: "#4361ee",
-              color: "#fff",
-              fontSize: "12px",
-              fontWeight: 700,
-              padding: "2px 8px",
+              padding: "12px 32px",
+              backgroundColor: "rgba(255,255,255,0.08)",
+              color: "#ffffff",
+              border: "1px solid rgba(255,255,255,0.15)",
               borderRadius: "10px",
+              cursor: "pointer",
+              fontSize: "15px",
+              fontWeight: 600,
+              transition: "all 0.2s",
+              display: "flex",
+              alignItems: "center",
+              gap: "10px",
+            }}
+            onMouseEnter={(e) => {
+              (e.currentTarget as HTMLButtonElement).style.backgroundColor =
+                "rgba(255,255,255,0.15)";
+              (e.currentTarget as HTMLButtonElement).style.borderColor =
+                "rgba(255,255,255,0.3)";
+            }}
+            onMouseLeave={(e) => {
+              (e.currentTarget as HTMLButtonElement).style.backgroundColor =
+                "rgba(255,255,255,0.08)";
+              (e.currentTarget as HTMLButtonElement).style.borderColor =
+                "rgba(255,255,255,0.15)";
             }}
           >
-            {draftCount}
-          </span>
-        </button>
-      )}
+            My Documents
+            <span
+              style={{
+                backgroundColor: "#4361ee",
+                color: "#fff",
+                fontSize: "12px",
+                fontWeight: 700,
+                padding: "2px 8px",
+                borderRadius: "10px",
+              }}
+            >
+              {draftCount}
+            </span>
+          </button>
+        )}
+        {onImport && (
+          <button
+            onClick={onImport}
+            style={{
+              padding: "12px 32px",
+              backgroundColor: "rgba(255,255,255,0.08)",
+              color: "#ffffff",
+              border: "1px solid rgba(255,255,255,0.15)",
+              borderRadius: "10px",
+              cursor: "pointer",
+              fontSize: "15px",
+              fontWeight: 600,
+              transition: "all 0.2s",
+              display: "flex",
+              alignItems: "center",
+              gap: "10px",
+            }}
+            onMouseEnter={(e) => {
+              (e.currentTarget as HTMLButtonElement).style.backgroundColor =
+                "rgba(255,255,255,0.15)";
+              (e.currentTarget as HTMLButtonElement).style.borderColor =
+                "rgba(255,255,255,0.3)";
+            }}
+            onMouseLeave={(e) => {
+              (e.currentTarget as HTMLButtonElement).style.backgroundColor =
+                "rgba(255,255,255,0.08)";
+              (e.currentTarget as HTMLButtonElement).style.borderColor =
+                "rgba(255,255,255,0.15)";
+            }}
+          >
+            Import File
+          </button>
+        )}
+      </div>
 
       {/* Tabs */}
       <div

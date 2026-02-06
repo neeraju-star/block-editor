@@ -1,4 +1,5 @@
 import type { ComponentConfig } from "@puckeditor/core";
+import { htmlToPlainText } from "../lib/pasteCleanup";
 
 export type TextProps = {
   content: string;
@@ -10,7 +11,52 @@ export type TextProps = {
 export const TextBlock: ComponentConfig<TextProps> = {
   label: "Text",
   fields: {
-    content: { type: "textarea", label: "Content" },
+    content: {
+      type: "custom",
+      label: "Content",
+      render: ({ value, onChange }) => {
+        const handlePaste = (e: React.ClipboardEvent<HTMLTextAreaElement>) => {
+          // Check if there is HTML content from clipboard
+          const htmlData = e.clipboardData.getData("text/html");
+          if (htmlData) {
+            e.preventDefault();
+            const cleanText = htmlToPlainText(htmlData);
+            const textarea = e.currentTarget;
+            const start = textarea.selectionStart;
+            const end = textarea.selectionEnd;
+            const currentValue = value ?? "";
+            const newValue =
+              currentValue.slice(0, start) +
+              cleanText +
+              currentValue.slice(end);
+            onChange(newValue);
+          }
+          // If no HTML data, let the default paste handle plain text
+        };
+
+        return (
+          <textarea
+            value={value ?? ""}
+            onChange={(e) => onChange(e.target.value)}
+            onPaste={handlePaste}
+            placeholder="Paste or type your text content here..."
+            style={{
+              width: "100%",
+              minHeight: "120px",
+              padding: "10px 12px",
+              border: "1px solid #ccc",
+              borderRadius: "6px",
+              fontSize: "14px",
+              fontFamily: "inherit",
+              lineHeight: 1.6,
+              resize: "vertical",
+              outline: "none",
+              boxSizing: "border-box",
+            }}
+          />
+        );
+      },
+    },
     alignment: {
       type: "radio",
       label: "Alignment",
